@@ -10,7 +10,7 @@ def menu():
 
     """
     print(menu_string)
-    op=int(input("Opcion: "))
+    op=int(input("Opcion: "))       
     return op
 
 
@@ -43,7 +43,8 @@ def buscar_repo():
     url = f"https://api.github.com/search/repositories?q={nombre_repo}"
     response=requests.get(url)
     if response.status_code==200:
-        resultados=response.json()['items']
+        resultados=response.json()['items'] #lista de diccionarios que contendra información de cada repositorio para las stats
+        lista_datos = []
         print("Repositorios que coinciden con el nombre:")
         for i,n in enumerate(resultados):
             print(f"id: {i+1} Nombre: {n['name']} Autor: {n['owner']['login']} ")
@@ -55,7 +56,9 @@ def buscar_repo():
         
         op=int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
 
-        detalles_repo(n['owner']['login'],n['name'])
+        lista_datos.append({"lang":n["language"]}) 
+        lista_datos[i] += detalles_repo(n['owner']['login'],n['name'])
+        
 
     else:
         pass
