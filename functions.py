@@ -1,50 +1,9 @@
 import requests
 import requests.utils
-from datetime import datetime
+from Repositorio import Repositorio
 
 
 
-class Repositorio:
-    
-    def __init__(self,nombre,owner) -> None:
-        self.nombre=nombre
-        self.owner=owner
-        self.mediana=""
-        self.info={}
-        
-
-
-    def detalles(self):
-     #promedio de issued cerrdas/abiertas en 30 dias o issues en un maximo
-     self._calcularMediana()
-     print(self.mediana)
-    
-    
-    def _calcularMediana(self):
-        url = f"https://api.github.com/repos/{self.nombre}/{self.owner}/commits"
-        response=requests.get(url)
-        fechas_commits=[]
-        if response.status_code==200:
-            resultados=response.json()
-            for n in resultados:
-                #mediana de las ultimas 30 commits en fechas
-                fecha = datetime.strptime(n['commit']['author']['date'], "%Y-%m-%dT%H:%M:%SZ")
-                fechas_commits.append(fecha)
-
-            fechas_commits=fechas_commits[::-1]
-            l=len(fechas_commits)
-            if l%2!=0:
-                self.mediana=fechas_commits[l//2]
-                
-            else:
-                timestamp1 = fechas_commits[l // 2 - 1].timestamp()
-                timestamp2 = fechas_commits[l // 2].timestamp()
-                self.mediana = datetime.fromtimestamp((timestamp1 + timestamp2) / 2)
-
-        else:
-            pass
-
-   
 def menu():
     menu_string="""
     Bienvenido, seleccione la opcion deseada:
@@ -79,6 +38,24 @@ def consultar_api():
 
 
 def buscar_repo():
+    #busqueda detallada
+    submenu="""Metodo de busqueda:
+    1. Ya conozco el nombre del reposiorio y usuario
+    2. Quiero Buscar por coincidencias"""
+    print(submenu)
+    op=int(input("Opcion:"))
+
+    match op:
+        case 1:
+            busqueda_especifica()
+        case 2:
+            busqueda_coincidencias()
+        case _:
+            pass
+
+
+def busqueda_coincidencias():
+        
     nombre_repo=input("Introduzca el nombre del repositorio: ")
 
     url = f"https://api.github.com/search/repositories?q={nombre_repo}"
@@ -105,6 +82,20 @@ def buscar_repo():
     else:
         pass
 
+def busqueda_especifica():
+    nombre,usuario="",""
+    while nombre=="" or usuario=="":
+        nombre=input("Introduzca el nombre del repositorio: ")
+        usuario=input("Introduzca el nombre del usuario que posee el repositorio: ")
+    url = f"https://api.github.com/repos/{usuario}/{nombre}"
+    response=requests.get(url)
+    if response.status_code!=200:
+        print("El repo no se encontre")
+    else:
+        print("ok!")
+
+    
+
 
 def buscar_usuario():
     pass
@@ -114,5 +105,6 @@ def buscar_usuario():
 if __name__=="__main__":
     #pruebas
 
-    repo=Repositorio("villagraandres","petTrack1")
-    repo.detalles()
+    #repo=Repositorio("villagraandres","petTrack1")
+    #repo.detalles()
+    busqueda_especifica()
