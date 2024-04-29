@@ -1,7 +1,6 @@
-import matplotlib as plt
 import requests
 import requests.utils
-
+from datetime import datetime
 
 def menu():
     menu_string="""
@@ -24,31 +23,39 @@ def consultar_api():
     match op:
         case 1:
             buscar_repo()
+            #anadir al stack
         case 2:
             buscar_usuario()
+            #anadir al stack
         case _:
             print("Opcion invalida")
             consultar_api()
 
-def crear_grafica_barras(dic,lable_y,title): #Dado un diccionario crea una gráfica de barras
-    fig, ax = plt.subplots()
-    bar_labels = ['red', 'blue', '_red', 'orange']
-    bar_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
 
-    ax.bar(dic.keys(), dic.values(), label=bar_labels, color=bar_colors)
-
-    ax.set_ylabel(lable_y)
-    ax.set_title(title)
-    #ax.legend()
-    fig.savefig("graph.png") #Verificar si en el directorio activo hay un archivo con el mismo nombre
-
-    plt.show()
 
 def detalles_repo(owner,nombre):
-     url = f"https://api.github.com/repos/{owner}/{repo}/commits"
+     url = f"https://api.github.com/repos/{owner}/{nombre}/commits"
      response=requests.get(url)
+     fechas_commits=[]
      if response.status_code==200:
-         pass
+         resultados=response.json()
+         for n in resultados:
+             #mediana de las ultimas 30 commits en fechas
+             fecha = datetime.strptime(n['commit']['author']['date'], "%Y-%m-%dT%H:%M:%SZ")
+             fechas_commits.append(fecha)
+
+         fechas_commits=fechas_commits[::-1]
+         l=len(fechas_commits)
+         if l%2!=0:
+             mediana=fechas_commits[l//2]
+         else:
+             timestamp1 = fechas_commits[l // 2 - 1].timestamp()
+             timestamp2 = fechas_commits[l // 2].timestamp()
+             print(timestamp1)
+             mediana = datetime.fromtimestamp((timestamp1 + timestamp2) / 2)
+  
+         print("mediana es",mediana)
+         
    
 
 def buscar_repo():
@@ -70,8 +77,9 @@ def buscar_repo():
         
         op=int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
 
-        lista_datos.append({"lang":n["language"]}) 
-        lista_datos[i] += detalles_repo(n['owner']['login'],n['name'])
+
+        detalles_repo(n['owner']['login'],n['name'])
+
         
 
     else:
@@ -81,3 +89,9 @@ def buscar_repo():
 def buscar_usuario():
     pass
 
+
+
+if __name__=="__main__":
+    #pruebas
+
+    detalles_repo("villagraandres","petTrack1")
