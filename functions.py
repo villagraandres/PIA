@@ -1,3 +1,4 @@
+import matplotlib as plt
 import requests
 import requests.utils
 
@@ -29,6 +30,19 @@ def consultar_api():
             print("Opcion invalida")
             consultar_api()
 
+def crear_grafica_barras(dic,lable_y,title): #Dado un diccionario crea una gráfica de barras
+    fig, ax = plt.subplots()
+    bar_labels = ['red', 'blue', '_red', 'orange']
+    bar_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
+
+    ax.bar(dic.keys(), dic.values(), label=bar_labels, color=bar_colors)
+
+    ax.set_ylabel(lable_y)
+    ax.set_title(title)
+    #ax.legend()
+    fig.savefig("graph.png") #Verificar si en el directorio activo hay un archivo con el mismo nombre
+
+    plt.show()
 
 def detalles_repo(owner,nombre):
      url = f"https://api.github.com/repos/{owner}/{repo}/commits"
