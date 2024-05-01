@@ -4,7 +4,7 @@ from Repositorio import Repositorio
 import matplotlib as plt
 import os
 import random
-
+import pandas as pd
 
 stack=[]
 
@@ -54,8 +54,6 @@ def crear_grafica_barras(dic,lable_y,title,color):
             fig.savefig(os.path.join("graficas",file_name)) 
 
     # plt.show()
-
-def dic_a_excel(dic):
     
 
 def consultar_api():
@@ -114,8 +112,9 @@ def busqueda_coincidencias():
     url = f"https://api.github.com/search/repositories?q={nombre_repo}"
     response=requests.get(url)
     if response.status_code==200:
-        resultados=response.json()['items'] #lista de diccionarios que contendra información de cada repositorio para las stats
-        lista_datos = []
+        resultados=response.json()['items']
+        detalles_repos = []
+        lenguajes = []
         print("Repositorios que coinciden con el nombre:")
         for i,n in enumerate(resultados):
             print(f"id: {i+1} Nombre: {n['name']} Autor: {n['owner']['login']} ")
@@ -123,15 +122,40 @@ def busqueda_coincidencias():
                 print(f"Temas: {', '.join(n['topics'])}\n")
             else:
                 print("El autor no proporciono temas\n")
-
+                
+            lenguajes[i] = {"lang":n["language"]} 
+            datos_int = ["id","name","created_at","updated_at","pushed_at","topics","watchers_count","open_issues","score","language"]
+            repo = {"owner":n["owner"]["login"]} + {dato:n[dato] for dato in datos_int}
+            detalles_repos.append(repo)
+            
+        lenguajes = [repo["language"] for repo in detalles_repos]    
+        lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} #Obtiene las cuentas de los lenguajes usados en los repos
         
-        op=int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
+        
+        
+        df = pd.DataFrame(detalles_repos)
+        #Crea una carpeta donde se almacenara el excel
+        if os.path.exists("excel") and os.path.isdir("excel"):
+            pass
+        else:
+            os.makedirs("excel")
 
-        repositorio=Repositorio(n['owner']['login'],n['name'])
+        #Guarda el excel
+        while True:
+            file_name = f"data{random.randint(1,2147483648)}.xlsx"
+            if os.path.exists("excel",file_name):
+                continue
+            else:
+                df.to_excel(os.path.join("excel",file_name))
+                # del detalles_repos 
+                break
+        
+        op = int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
+        repositorio = Repositorio(n['owner']['login'],n['name'])
         repositorio.detalles()
 
-        
 
+    
     else:
         pass
 

@@ -11,21 +11,23 @@ class Repositorio:
 
 
     def detalles(self):
-     #promedio de issued cerrdas/abiertas en 30 dias o issues en un maximo
-     self._calcularMediana()
-     print(self.mediana)
+        #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
+        self._calcularMediana()
+        print(self.mediana)
     
     
     def _calcularMediana(self):
-        url = f"https://api.github.com/repos/{self.nombre}/{self.owner}/commits"
+        url = f"https://api.github.com/repos/{self.owner}/{self.nombre}/commits"
         response=requests.get(url)
         fechas_commits=[]
         if response.status_code==200:
             resultados=response.json()
-            for n in resultados:
+            for i,n in enumerate(resultados):
                 #mediana de las ultimas 30 commits en fechas
                 fecha = datetime.strptime(n['commit']['author']['date'], "%Y-%m-%dT%H:%M:%SZ")
                 fechas_commits.append(fecha)
+                if i>29:
+                    break
 
             fechas_commits=fechas_commits[::-1]
             l=len(fechas_commits)
