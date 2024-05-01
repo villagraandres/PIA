@@ -1,6 +1,11 @@
 import requests
 import requests.utils
 from Repositorio import Repositorio
+import matplotlib as plt
+import os
+import random
+
+
 stack=[]
 
 
@@ -14,6 +19,44 @@ def menu():
     op=int(input("Opcion: "))      
     return op
 
+
+"""
+#Dado un diccionario crea una gráfica de barras, supone valores númericos en los valores, y ordena los datos 
+#En orden ascendente
+"""
+def crear_grafica_barras(dic,lable_y,title,color): 
+    values = dic.values()
+    ord_values = dic.values().sort()
+    ord_dic = [dic[values.index(ord_values[i])] for i in range(len(dic))]
+    
+    rgba_color = plt.colors.to_rgba(color)
+    n = len(ord_dic)
+    fig, ax = plt.subplots()
+    bar_colors = [rgba_color[:3] + (i/n,)  for i in range(1,n+1)] #Usa el color dado y da un degradado para diferenciar
+
+    ax.bar(ord_dic.keys(), ord_dic.values(), color=bar_colors)
+
+    ax.set_ylabel(lable_y)
+    ax.set_title(title)
+
+    #Crea una carpeta donde se almacenaran las imágenes
+    if os.path.exists("graficas") and os.path.isdir("graficas"):
+        pass
+    else:
+        os.makedirs("graficas")
+        
+    #Guarda la gráfica creada en png
+    while True:
+        file_name = f"graph{random.randint(1,2147483648)}.png"
+        if os.path.exists("graficas",file_name):
+            continue
+        else:
+            fig.savefig(os.path.join("graficas",file_name)) 
+
+    # plt.show()
+
+def dic_a_excel(dic):
+    
 
 def consultar_api():
     submmenu="""Seleecione de que quiere obtener los datos:
@@ -109,7 +152,8 @@ def busqueda_especifica():
         print("ok!")
 
     
-
+def excel_print():
+    pass
 
 def buscar_usuario():
     pass
