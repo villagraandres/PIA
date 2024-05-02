@@ -129,7 +129,12 @@ def busqueda_coincidencias():
             detalles_repos.append(repo)
             
         lenguajes = [repo["language"] for repo in detalles_repos]    
-        lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} #Obtiene las cuentas de los lenguajes usados en los repos
+        
+        #Obtenemos la moda de los lenguajes usados en los repositorios
+        lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
+        moda = max(lenguajes_count.values())
+        lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
+        crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","black")
         
         
         
