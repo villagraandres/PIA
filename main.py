@@ -11,7 +11,7 @@ if __name__ == "__main__":
                 functions.consultar_api()
             case 3:
                 # Add an option for the user to exit the program
-                print("Exiting the program.")
+                print("salineod")
                 break
             case _:
-                print("Invalid option. Please try again.")
+                print("adasd")
