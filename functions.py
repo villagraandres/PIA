@@ -4,9 +4,10 @@ from Repositorio import Repositorio
 import os
 import random
 import pandas as pd
-import time
 from matplotlib import colors
 import matplotlib.pyplot as plt
+from datetime import datetime
+
 stack=[]
 
 
@@ -143,7 +144,10 @@ def busqueda_coincidencias():
         moda = max(lenguajes_count.values())
         #lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
         crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","black")
-        
+        print("Se ha creado la grafica de lenguaje de la busqueda")
+
+
+
         
 
         while True:
@@ -156,7 +160,9 @@ def busqueda_coincidencias():
                 if not os.path.exists("registros"):
                     os.makedirs("registros")
                 
-                with open(f"registros/datos_repo{time.time()}","w") as f:
+                fecha=datetime.now()
+                nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S")
+                with open(f"registros/datos_repo_{nombre_archivo}","w") as f:
                     for n in detalles_repos:
                         f.write(f"id: {n['id']} , nombre: {n['name']}, visitas: {n['watchers_count']} ")
                         f.write("\n")
@@ -171,27 +177,18 @@ def busqueda_coincidencias():
 
         
         
-        df = pd.DataFrame(detalles_repos)
-        #Crea una carpeta donde se almacenara el excel
 
-            
-        if os.path.exists("excel") and os.path.isdir("excel"):
-            pass
-        else:
-            os.makedirs("excel")
-
-        #Guarda el excel
         while True:
-            file_name = f"data{random.randint(1,2147483648)}.xlsx"
-            if os.path.exists("excel",file_name):
+            op = int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
+            
+            if op<1 or op>len(resultados):
+                print("Opcion invalida")
                 continue
-            else:
-                df.to_excel(os.path.join("excel",file_name))
-                # del detalles_repos 
-                break
-        
-        op = int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
-        repositorio = Repositorio(n['owner']['login'],n['name'])
+            break
+
+        repo=resultados[op-1]
+        repositorio = Repositorio(repo['owner']['login'],repo['name'])
+        print(repositorio)
         repositorio.detalles()
 
 
