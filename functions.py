@@ -30,14 +30,11 @@ def crear_grafica_barras(dic,lable_y,title,color):
 
     ord_dic={}
     for k,v in dic.items():
-        print(k,type(k))
-        print(k==None)
         if k is not  None:
             ord_dic[k]=v
 
     ord_dic = dict(sorted(ord_dic.items(), key=lambda item: item[1]))
 
-    print(ord_dic)
     rgba_color = colors.to_rgba(color)
     n = len(ord_dic)
     fig, ax = plt.subplots(figsize=(15,6))
@@ -148,13 +145,35 @@ def busqueda_coincidencias():
         crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","black")
         
         
+
+        while True:
+            
+            op2=input("Deseas guardar el registro de los repositorios en un archivo txt? Y/N:  ")
+            if op2=="Y" or op2=="y":
+
+                print("Creando archivo ...")
+
+                if not os.path.exists("registros"):
+                    os.makedirs("registros")
+                
+                with open(f"registros/datos_repo{time.time()}","w") as f:
+                    for n in detalles_repos:
+                        f.write(f"id: {n['id']} , nombre: {n['name']}, visitas: {n['watchers_count']} ")
+                        f.write("\n")
+                
+                print("Archivo creado con exito")
+
+                break
+            elif op2=="N" or op2=="n":
+                break
+            else:
+                print("Dato invalido")
+
+        
         
         df = pd.DataFrame(detalles_repos)
         #Crea una carpeta donde se almacenara el excel
 
-        with open(f"datos_repo{time.time()}","w") as f:
-
-            f.write(detalles_repos)
             
         if os.path.exists("excel") and os.path.isdir("excel"):
             pass
