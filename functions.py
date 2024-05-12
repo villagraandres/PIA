@@ -1,11 +1,12 @@
 import requests
 import requests.utils
 from Repositorio import Repositorio
-import matplotlib as plt
 import os
 import random
 import pandas as pd
-
+import time
+from matplotlib import colors
+import matplotlib.pyplot as plt
 stack=[]
 
 
@@ -25,20 +26,27 @@ def menu():
 #En orden ascendente
 """
 def crear_grafica_barras(dic,lable_y,title,color): 
-    values = dic.values()
-    ord_values = dic.values().sort()
-    ord_dic = [dic[values.index(ord_values[i])] for i in range(len(dic))]
     
-    rgba_color = plt.colors.to_rgba(color)
-    n = len(ord_dic)
-    fig, ax = plt.subplots()
-    bar_colors = [rgba_color[:3] + (i/n,)  for i in range(1,n+1)] #Usa el color dado y da un degradado para diferenciar
 
+    ord_dic={}
+    for k,v in dic.items():
+        print(k,type(k))
+        print(k==None)
+        if k is not  None:
+            ord_dic[k]=v
+
+    ord_dic = dict(sorted(ord_dic.items(), key=lambda item: item[1]))
+
+    print(ord_dic)
+    rgba_color = colors.to_rgba(color)
+    n = len(ord_dic)
+    fig, ax = plt.subplots(figsize=(15,6))
+    bar_colors = [rgba_color[:3] + (i/n,)  for i in range(1,n+1)] #Usa el color dado y da un degradado para diferenciar
     ax.bar(ord_dic.keys(), ord_dic.values(), color=bar_colors)
 
     ax.set_ylabel(lable_y)
     ax.set_title(title)
-
+    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     #Crea una carpeta donde se almacenaran las imágenes
     if os.path.exists("graficas") and os.path.isdir("graficas"):
         pass
@@ -46,12 +54,13 @@ def crear_grafica_barras(dic,lable_y,title,color):
         os.makedirs("graficas")
         
     #Guarda la gráfica creada en png
-    while True:
-        file_name = f"graph{random.randint(1,2147483648)}.png"
-        if os.path.exists("graficas",file_name):
-            continue
-        else:
-            fig.savefig(os.path.join("graficas",file_name)) 
+
+        
+    file_name = f"graph{random.randint(1,2147483648)}.png"
+    ruta=os.path.join("graficas",file_name)
+    if not os.path.exists(ruta):
+        fig.savefig(ruta)
+        
 
     # plt.show()
     
@@ -124,9 +133,10 @@ def busqueda_coincidencias():
             else:
                 print("El autor no proporciono temas\n")
                 
-            lenguajes[i] = {"lang":n["language"]} 
+            lenguajes.append( {"lang":n["language"]} )
             datos_int = ["id","name","created_at","updated_at","pushed_at","topics","watchers_count","open_issues","score","language"]
-            repo = {"owner":n["owner"]["login"]} + {dato:n[dato] for dato in datos_int}
+            repo = {dato:n[dato] for dato in datos_int}
+            repo['owner']=n["owner"]["login"]     
             detalles_repos.append(repo)
             
         lenguajes = [repo["language"] for repo in detalles_repos]    
@@ -134,13 +144,18 @@ def busqueda_coincidencias():
         #Obtenemos la moda de los lenguajes usados en los repositorios
         lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
         moda = max(lenguajes_count.values())
-        lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
+        #lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
         crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","black")
         
         
         
         df = pd.DataFrame(detalles_repos)
         #Crea una carpeta donde se almacenara el excel
+
+        with open(f"datos_repo{time.time()}","w") as f:
+
+            f.write(detalles_repos)
+            
         if os.path.exists("excel") and os.path.isdir("excel"):
             pass
         else:
@@ -196,4 +211,5 @@ if __name__=="__main__":
 
     #repo=Repositorio("villagraandres","petTrack1")
     #repo.detalles()
+    busqueda_coincidencias()
     pass
