@@ -125,8 +125,10 @@ def busqueda_coincidencias():
                 
             lenguajes[i] = {"lang":n["language"]} 
             datos_int = ["id","name","created_at","updated_at","pushed_at","topics","watchers_count","open_issues","score","language"]
-            repo = {"owner":n["owner"]["login"]} + {dato:n[dato] for dato in datos_int}
+            repo = {dato:n[dato] for dato in datos_int}  
+             
             detalles_repos.append(repo)
+            
             
         lenguajes = [repo["language"] for repo in detalles_repos]    
         
@@ -139,6 +141,7 @@ def busqueda_coincidencias():
         
         
         df = pd.DataFrame(detalles_repos)
+        
         #Crea una carpeta donde se almacenara el excel
         if os.path.exists("excel") and os.path.isdir("excel"):
             pass
@@ -154,6 +157,7 @@ def busqueda_coincidencias():
                 df.to_excel(os.path.join("excel",file_name))
                 # del detalles_repos 
                 break
+        
         
         op = int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
         repositorio = Repositorio(n['owner']['login'],n['name'])
