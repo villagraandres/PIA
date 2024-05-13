@@ -1,5 +1,7 @@
 from datetime import datetime,timedelta
 import requests
+import functions
+
 class Repositorio:
     
     def __init__(self,nombre,owner) -> None:
@@ -16,7 +18,8 @@ class Repositorio:
     def detalles(self):
         #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
         self._calcularMedianayPromedio()
-        print(self.mediana)
+        print(f"La mediana de las ultimas 30 commits en fechas: {self.mediana}")
+        print(f"El promedio de tiempo entre cada commit es: {self.promedio}")
     
     
     def _calcularMedianayPromedio(self):
@@ -24,6 +27,7 @@ class Repositorio:
         response=requests.get(url)
         fechas_commits=[]
         if response.status_code==200:
+            print("Se esta calculando la mediana y el promedio de los commits...")
             resultados=response.json()
             for i,n in enumerate(resultados):
                 
@@ -44,9 +48,17 @@ class Repositorio:
                 self.mediana = datetime.fromtimestamp((timestamp1 + timestamp2) / 2)
                 
             #Promedio de tiempo en las últimas 30 commits formateado
-            diff_tiempo = [(fechas_commits[i + 1] - fechas_commits[i]).total_seconds() for i in range(len(fechas_commits) - 1)]
+            diff_tiempo = [abs(fechas_commits[i + 1] - fechas_commits[i]).total_seconds() for i in range(len(fechas_commits) - 1)]
             t_prom = sum(diff_tiempo)/len(diff_tiempo)
             self.promedio = str(timedelta(seconds=t_prom))
+            hiatus_t_asc = diff_tiempo[20:]
+            indexes  = [i+1 for i in range(len(hiatus_t_asc))]
+            t_entre_comm = dict(zip(indexes,hiatus_t_asc))
+        
+            functions.crear_grafica_barras(t_entre_comm,"","Mayor tiempo entre commits","green")
+            print("Se creo exitosamente la gráfica de tiempos")
+            
+            
             
             
             

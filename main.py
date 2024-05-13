@@ -3,6 +3,8 @@ import functions
 if __name__ == "__main__":
     while True:
         op = functions.menu()
+        f = 0
+    
         match op:
             case 1:
                 # Add your code for option 1 here
@@ -15,3 +17,7 @@ if __name__ == "__main__":
                 break
             case _:
                 print("adasd")
+            
+        if f != 0:
+            print("\nSaliendo...")
+            break

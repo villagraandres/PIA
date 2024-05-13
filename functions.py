@@ -70,17 +70,22 @@ def consultar_api():
         3. Regresar"""
     print(submmenu)
     op=int(input("Opcion: "))
-    match op:
-        case 1:
-            buscar_repo()
-            return
-        case 2:
-            buscar_usuario()
-            return
-        case 3:
-            return
-        case _:
-            print("Opcion invalida")
+    try:
+        match op:
+            case 1:
+                buscar_repo()
+                return
+            case 2:
+                buscar_usuario()
+                return
+            case 3:
+                return
+            case _:
+                print("Opcion invalida")    
+            
+    except:
+        print("Opción equivocada, ingrese números")
+    
     stack.append(consultar_api)
 
 
@@ -142,14 +147,11 @@ def busqueda_coincidencias():
         
         #Obtenemos la moda de los lenguajes usados en los repositorios
         lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
-        moda = max(lenguajes_count.values())
-        #lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
+        # moda = max(lenguajes_count.values())
+        # lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
+        # print("Los lenguajes más usados fueron: " + ", ".join(lenguajes_moda) + f"\nCon una moda de {moda}")
         crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","blue")
         print("Se ha creado la grafica de lenguaje de la busqueda")
-
-
-
-        
 
         while True:
             
@@ -188,7 +190,7 @@ def busqueda_coincidencias():
             break
 
         repo=resultados[op-1]
-        repositorio = Repositorio(repo['owner']['login'],repo['name'])
+        repositorio = Repositorio(repo['name'],repo['owner']['login'])
         print(repositorio)
         repositorio.detalles()
 
