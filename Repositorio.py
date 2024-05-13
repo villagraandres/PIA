@@ -51,10 +51,9 @@ class Repositorio:
             diff_tiempo = [abs(fechas_commits[i + 1] - fechas_commits[i]).total_seconds() for i in range(len(fechas_commits) - 1)]
             t_prom = sum(diff_tiempo)/len(diff_tiempo)
             self.promedio = str(timedelta(seconds=t_prom))
-            hiatus_t_asc = diff_tiempo[20:]
-            indexes  = [i+1 for i in range(len(hiatus_t_asc))]
+            hiatus_t_asc = sorted(diff_tiempo)[20:]
+            indexes  = [str(timedelta(t)) for t in hiatus_t_asc]
             t_entre_comm = dict(zip(indexes,hiatus_t_asc))
-        
             functions.crear_grafica_barras(t_entre_comm,"","Mayor tiempo entre commits","green")
             print("Se creo exitosamente la gráfica de tiempos")
             
