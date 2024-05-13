@@ -10,6 +10,8 @@ class Repositorio:
         self.info={}
         
 
+    def __str__(self) -> str:
+        return f"{self.owner} {self.nombre}"
 
     def detalles(self):
         #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
