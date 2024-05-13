@@ -15,7 +15,7 @@ class Repositorio:
 
     def detalles(self):
         #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
-        self._calcularMediana()
+        self._calcularMedianayPromedio()
         print(self.mediana)
     
     

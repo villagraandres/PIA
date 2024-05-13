@@ -144,7 +144,7 @@ def busqueda_coincidencias():
         lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
         moda = max(lenguajes_count.values())
         #lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
-        crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","black")
+        crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","blue")
         print("Se ha creado la grafica de lenguaje de la busqueda")
 
 

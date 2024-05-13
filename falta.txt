@@ -1,0 +1,2 @@
+Falta el consultar datos en la función de inicio. Es decir ver los datos que hay ya guardados
+Obtener datos de un usuario en especifico
