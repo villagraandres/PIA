@@ -40,7 +40,11 @@ def crear_grafica_barras(dic,lable_y,title,color,tipo):
 
     rgba_color = colors.to_rgba(color)
     n = len(ord_dic)
-    fig, ax = plt.subplots(figsize=(15,6))
+    if tipo=="lenguajes":       
+        fig, ax = plt.subplots(figsize=(15,6))
+    elif tipo=="estadisticas":
+        fig, ax = plt.subplots(figsize=(25,6))
+
     bar_colors = [rgba_color[:3] + (i/n,)  for i in range(1,n+1)] #Usa el color dado y da un degradado para diferenciar
     ax.bar(ord_dic.keys(), ord_dic.values(), color=bar_colors)
 
@@ -164,12 +168,9 @@ def busqueda_coincidencias():
             
             
         lenguajes = [repo["language"] for repo in detalles_repos]    
-        
-        #Obtenemos la moda de los lenguajes usados en los repositorios
+
         lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
-        # moda = max(lenguajes_count.values())
-        # lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
-        # print("Los lenguajes más usados fueron: " + ", ".join(lenguajes_moda) + f"\nCon una moda de {moda}")
+  
         crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","blue","lenguajes")
         print("Se ha creado la grafica de lenguaje de la busqueda")
 
@@ -207,10 +208,12 @@ def busqueda_coincidencias():
 
                 if not os.path.exists("excel"):
                     os.makedirs("excel")
-                
+                if not os.path.exists("excel/registros"):
+                    os.makedirs("excel/registros")
+
                 fecha=datetime.now()
                 nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S") + ".xlsx"
-                ruta = os.path.join("excel/", nombre_archivo)
+                ruta = os.path.join("excel/registros/", nombre_archivo)
                 df = pd.DataFrame(detalles_repos)
                 df.to_excel(ruta, index=False, sheet_name="Hoja1")
                 
@@ -237,7 +240,6 @@ def busqueda_coincidencias():
 
         repo=resultados[op-1]
         repositorio = Repositorio(repo['name'],repo['owner']['login'])
-        print(repositorio)
         repositorio.detalles()
 
 
@@ -252,15 +254,16 @@ def busqueda_especifica():
     while nombre=="" or usuario=="":
         nombre=input("Introduzca el nombre del repositorio: ")
         if nombre=="back!":
-            stack.pop()()     
+            consultar_api()   
         usuario=input("Introduzca el nombre del usuario que posee el repositorio: ")
-    stack.append(busqueda_especifica)
     url = f"https://api.github.com/repos/{usuario}/{nombre}"
     response=requests.get(url)
     if response.status_code!=200:
         print("El repo no se encontro")
     else:
-        print("ok!")
+        repo=Repositorio(nombre,usuario)
+        repo.detalles()
+        repo.excelEstadisticas()
 
 
 
@@ -292,5 +295,5 @@ if __name__=="__main__":
 
     #repo=Repositorio("villagraandres","petTrack1")
     #repo.detalles()
-    busqueda_archivo()
+    busqueda_especifica()
     pass

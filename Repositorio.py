@@ -1,6 +1,7 @@
 from datetime import datetime,timedelta
 import requests
-
+import os
+import pandas as pd
 
 class Repositorio:
     
@@ -55,10 +56,54 @@ class Repositorio:
             indexes  = [str(timedelta(seconds=t)) for t in hiatus_t_asc]
             t_entre_comm = dict(zip(indexes,hiatus_t_asc))
             import functions
-            functions.crear_grafica_barras(t_entre_comm,"","Mayor tiempo entre commits","green","estadisticas")
+            functions.crear_grafica_barras(t_entre_comm,"",f"Mayor tiempo entre commits en: {self.nombre}","green","estadisticas")
             print("Se creo exitosamente la gráfica de tiempos")
 
         else:
             pass
+    def excelEstadisticas(self):
+        #excel con nombre, autor estrellas visitas issues commits fecha de creado rama principal contribuidores
+        url = f"https://api.github.com/repos/{self.owner}/{self.nombre}"
+        response=requests.get(url)
+        if response.status_code==200:
+            resultado=response.json()
+            h={}
+            h["id"]=resultado["id"]
+            h["Nombre"]=resultado["name"]
+            h["Autor"]=resultado["owner"]["login"]
+            h["Rama default"]=resultado["default_branch"]
+            h["Tamaño (Kb)"]=resultado["size"]
+            h["Estrellas"]=resultado["stargazers_count"]
+            h["Visitas"]=resultado["watchers_count"]
+            h["Lenguaje principal"]=resultado["language"]
+            h["Numero de forks"]=resultado["forks_count"]
 
+            url2=url+"/contributors"
+            response2=requests.get(url2)
+            if response2.status_code==200:
+                resultado2=response2.json()
+                cont=[]
+                for n in resultado2:
+                    cont.append(n["login"])
+
+            h["contribuidores"]=cont
+
+            if not os.path.exists("excel"):
+                os.makedirs("excel")
+            if not os.path.exists("excel/repo"):
+                os.makedirs("excel/repo")
+            fecha=datetime.now()
+            nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S") + ".xlsx"
+            ruta=os.path.join("excel/repo/",nombre_archivo)
+
+            df=pd.DataFrame([h])
+            df.to_excel(ruta,index=False)          
+            print(h)
+
+
+        else:
+            pass
+
+
+        pass
    
