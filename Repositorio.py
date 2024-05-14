@@ -1,6 +1,6 @@
 from datetime import datetime,timedelta
 import requests
-import functions
+
 
 class Repositorio:
     
@@ -54,7 +54,8 @@ class Repositorio:
             hiatus_t_asc = sorted(diff_tiempo)[20:]
             indexes  = [str(timedelta(t)) for t in hiatus_t_asc]
             t_entre_comm = dict(zip(indexes,hiatus_t_asc))
-            functions.crear_grafica_barras(t_entre_comm,"","Mayor tiempo entre commits","green")
+            import functions
+            functions.crear_grafica_barras(t_entre_comm,"","Mayor tiempo entre commits","green","estadisticas")
             print("Se creo exitosamente la gráfica de tiempos")
             
             
