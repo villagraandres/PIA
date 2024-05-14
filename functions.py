@@ -8,6 +8,7 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+
 stack=[]
 
 
@@ -16,9 +17,10 @@ def menu():
     Bienvenido, seleccione la opcion deseada:
         1. Consultar datos almacenados
         2. Buscar datos con la API de github
+        3.Salir
     """
     print(menu_string)
-    op=int(input("Opcion: "))      
+    op=input("Opcion: ")    
     return op
 
 
@@ -236,8 +238,10 @@ def busqueda_especifica():
 
 
 
-def consultar_datos():
-    pass
+def busqueda_archivo():
+    print("Buscando archivos")
+
+
 def excel_print():
     pass
 
