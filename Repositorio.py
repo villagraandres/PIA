@@ -57,11 +57,6 @@ class Repositorio:
             import functions
             functions.crear_grafica_barras(t_entre_comm,"","Mayor tiempo entre commits","green","estadisticas")
             print("Se creo exitosamente la gráfica de tiempos")
-            
-            
-            
-            
-            
 
         else:
             pass

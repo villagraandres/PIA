@@ -14,7 +14,7 @@ stack=[]
 def menu():
     menu_string="""
     Bienvenido, seleccione la opcion deseada:
-        1. Consultar datos
+        1. Consultar datos almacenados
         2. Buscar datos con la API de github
     """
     print(menu_string)
@@ -234,7 +234,10 @@ def busqueda_especifica():
     else:
         print("ok!")
 
-    
+
+
+def consultar_datos():
+    pass
 def excel_print():
     pass
 
