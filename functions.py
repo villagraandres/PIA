@@ -14,7 +14,7 @@ stack=[]
 def menu():
     menu_string="""
     Bienvenido, seleccione la opcion deseada:
-        1. Consultar datos
+        1. Consultar datos almacenados
         2. Buscar datos con la API de github
     """
     print(menu_string)
@@ -26,7 +26,7 @@ def menu():
 #Dado un diccionario crea una gráfica de barras, supone valores númericos en los valores, y ordena los datos 
 #En orden ascendente
 """
-def crear_grafica_barras(dic,lable_y,title,color): 
+def crear_grafica_barras(dic,lable_y,title,color,tipo): 
     
 
     ord_dic={}
@@ -45,6 +45,9 @@ def crear_grafica_barras(dic,lable_y,title,color):
     ax.set_ylabel(lable_y)
     ax.set_title(title)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
+
+    
+        
     #Crea una carpeta donde se almacenaran las imágenes
     if os.path.exists("graficas") and os.path.isdir("graficas"):
         pass
@@ -52,12 +55,27 @@ def crear_grafica_barras(dic,lable_y,title,color):
         os.makedirs("graficas")
         
     #Guarda la gráfica creada en png
+    if tipo=="lenguajes":
+        if not os.path.exists("graficas/lenguajes"):
+            os.makedirs("graficas/lenguajes")
+        
+        file_name = f"graph{random.randint(1,2147483648)}.png"
+        ruta=os.path.join("graficas/lenguajes",file_name)
+        if not os.path.exists(ruta):
+            fig.savefig(ruta)
+    elif tipo=="estadisticas":
+         
+         if not os.path.exists("graficas/estadisticas"):
+            os.makedirs("graficas/estadisticas")
+        
+         file_name = f"graph{random.randint(1,2147483648)}.png"
+         ruta=os.path.join("graficas/estadisticas",file_name)
+         if not os.path.exists(ruta):
+            fig.savefig(ruta)       
 
         
-    file_name = f"graph{random.randint(1,2147483648)}.png"
-    ruta=os.path.join("graficas",file_name)
-    if not os.path.exists(ruta):
-        fig.savefig(ruta)
+    
+    
         
 
     # plt.show()
@@ -150,7 +168,7 @@ def busqueda_coincidencias():
         # moda = max(lenguajes_count.values())
         # lenguajes_moda = [lang for lang,count in lenguajes_count if count == moda] 
         # print("Los lenguajes más usados fueron: " + ", ".join(lenguajes_moda) + f"\nCon una moda de {moda}")
-        crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","blue")
+        crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","blue","lenguajes")
         print("Se ha creado la grafica de lenguaje de la busqueda")
 
         while True:
@@ -216,7 +234,10 @@ def busqueda_especifica():
     else:
         print("ok!")
 
-    
+
+
+def consultar_datos():
+    pass
 def excel_print():
     pass
 

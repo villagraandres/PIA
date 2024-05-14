@@ -7,12 +7,11 @@ if __name__ == "__main__":
     
         match op:
             case 1:
-                # Add your code for option 1 here
+                functions.consultar_datos()
                 pass
             case 2:
                 functions.consultar_api()
             case 3:
-                # Add an option for the user to exit the program
                 print("salineod")
                 break
             case _:
