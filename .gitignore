@@ -1,1 +1,10 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+
+# Ignore specific file
+testing.py
+
+# Ignore specific folder
+graficas/
+registros

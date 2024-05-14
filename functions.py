@@ -197,6 +197,32 @@ def busqueda_coincidencias():
                 break
             else:
                 print("Dato invalido")
+                
+        while True:
+    
+            op3=input("Deseas guardar el registro de los repositorios en un archivo excel? Y/N:  ")
+            if op3=="Y" or op3=="y":
+
+                print("Creando archivo ...")
+
+                if not os.path.exists("excel"):
+                    os.makedirs("excel")
+                
+                fecha=datetime.now()
+                nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S") + ".xlsx"
+                ruta = os.path.join("excel/", nombre_archivo)
+                df = pd.DataFrame(detalles_repos)
+                df.to_excel(ruta, index=False, sheet_name="Hoja1")
+                
+                
+                print("Archivo creado con exito")
+
+                break
+            elif op2=="N" or op2=="n":
+                break
+            else:
+                print("Dato invalido")
+
 
         
         
