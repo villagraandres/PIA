@@ -265,7 +265,18 @@ def busqueda_especifica():
 
 
 def busqueda_archivo():
-    print("Buscando archivos")
+    print("Los registros guardados son:")
+    archivos=os.listdir("registros")
+    for i,n in enumerate(archivos):
+        print(f"id: {i+1} Nombre: {n}")
+    op=int(input("Selecciona el id del archivo que quieres consultar"))
+
+    with open(f"registros/{archivos[op-1]}") as archivo:
+        contenido=archivo.read()
+        print(contenido)
+
+    
+
 
 
 def excel_print():
@@ -281,5 +292,5 @@ if __name__=="__main__":
 
     #repo=Repositorio("villagraandres","petTrack1")
     #repo.detalles()
-    busqueda_coincidencias()
+    busqueda_archivo()
     pass
