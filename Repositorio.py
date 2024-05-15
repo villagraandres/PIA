@@ -2,6 +2,7 @@ from datetime import datetime,timedelta
 import requests
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class Repositorio:
     
@@ -20,6 +21,7 @@ class Repositorio:
     def detalles(self):
         self._calcularMedianayPromedio()
         self._calcularModa()
+        print(f"La moda en el lenguaje mas usado es: {self.moda}")
         print(f"La mediana de las ultimas 30 commits en fechas: {self.mediana}")
         print(f"El promedio de tiempo entre cada commit es: {self.promedio}")   
 
@@ -129,6 +131,24 @@ class Repositorio:
             lenguajes=respuesta.json()
             total=sum(lenguajes.values())
             porcentajes={lang:(c/total)*100 for lang,c in lenguajes.items()}
+            max_key = max(porcentajes.items(), key=lambda x: x[1])[0]
+            self.moda=max_key
+
+
+            if not os.path.exists("graficas"):
+                os.makedirs("graficas")
+            if not os.path.exists("graficas/estadisticas"):
+                os.makedirs("graficas/estadisticas")
+
+            #crear grafica de pastel  
+            f=datetime.now()
+            tiempo=f.strftime("%d-%m-%Y_%H")  
+            nombre=f"grafica_{self.nombre}_{tiempo}"
+            plt.pie(porcentajes.values(),labels=porcentajes.keys())
+            plt.title("Porcentajes del lenguajes de programacion")
+            plt.savefig(f"graficas/estadisticas/{nombre}")
+            plt.close()
+            
         else:
             pass
 
@@ -145,7 +165,7 @@ class Repositorio:
         tiempo=f.strftime("%d-%m-%Y_%H")
         nombre=f"reporte_{tiempo}"
 
-        with open(f"estadisticas_re/repositorios/{nombre}.txt","w") as f:
+        with open(f"registros/estadisticas_re/{nombre}.txt","w") as f:
             f.write(f"Nombre: {self.nombre},")
             f.write("\n")
             f.write(f"Mediana de fechas de commits: {self.mediana}")
