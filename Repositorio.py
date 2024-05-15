@@ -10,6 +10,7 @@ class Repositorio:
         self.owner=owner
         self.mediana=""
         self.promedio=""
+        self.moda=""
         self.info={}
         
 
@@ -18,6 +19,7 @@ class Repositorio:
 
     def detalles(self):
         self._calcularMedianayPromedio()
+        self._calcularModa()
         print(f"La mediana de las ultimas 30 commits en fechas: {self.mediana}")
         print(f"El promedio de tiempo entre cada commit es: {self.promedio}")   
 
@@ -119,6 +121,17 @@ class Repositorio:
 
 
     
+    def _calcularModa(self):
+        url = f"https://api.github.com/repos/{self.owner}/{self.nombre}/languages"
+        respuesta=requests.get(url)
+
+        if respuesta.status_code==200:
+            lenguajes=respuesta.json()
+            total=sum(lenguajes.values())
+            porcentajes={lang:(c/total)*100 for lang,c in lenguajes.items()}
+        else:
+            pass
+
     def _generartxt(self):
         
         
