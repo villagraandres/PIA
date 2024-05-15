@@ -17,10 +17,22 @@ class Repositorio:
         return f"{self.owner} {self.nombre}"
 
     def detalles(self):
-        #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
         self._calcularMedianayPromedio()
         print(f"La mediana de las ultimas 30 commits en fechas: {self.mediana}")
-        print(f"El promedio de tiempo entre cada commit es: {self.promedio}")
+        print(f"El promedio de tiempo entre cada commit es: {self.promedio}")   
+
+        op=""
+
+        while op!="Y" and op!="N" and op!= "n" and op!="y":
+            op=input("¿Deseas generar un archivo txt con infamacion del repositorio? Y/N: ")
+           
+
+        if op=="Y" or op=="y":
+            self._generartxt()
+        else:
+            pass
+        #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
+
     
     
     def _calcularMedianayPromedio(self):
@@ -71,12 +83,14 @@ class Repositorio:
             h["id"]=resultado["id"]
             h["Nombre"]=resultado["name"]
             h["Autor"]=resultado["owner"]["login"]
+            h["Mediana commits"]=self.mediana
+            h["Promedio commits"]=self.promedio
             h["Rama default"]=resultado["default_branch"]
             h["Tamaño (Kb)"]=resultado["size"]
             h["Estrellas"]=resultado["stargazers_count"]
             h["Visitas"]=resultado["watchers_count"]
             h["Lenguaje principal"]=resultado["language"]
-            h["Numero de forks"]=resultado["forks_count"]
+            h["Forks"]=resultado["forks_count"]
 
             url2=url+"/contributors"
             response2=requests.get(url2)
@@ -98,12 +112,32 @@ class Repositorio:
 
             df=pd.DataFrame([h])
             df.to_excel(ruta,index=False)          
-            print(h)
 
 
         else:
             pass
 
 
-        pass
+    
+    def _generartxt(self):
+        
+        
+        if not os.path.exists("registros"):
+            os.makedirs("registros")
+        
+        if not os.path.exists("registros/estadisticas_re"):
+            os.makedirs("registros/estadisticas_re")
+
+        f=datetime.now()
+        tiempo=f.strftime("%d-%m-%Y_%H")
+        nombre=f"reporte_{tiempo}"
+
+        with open(f"estadisticas_re/repositorios/{nombre}.txt","w") as f:
+            f.write(f"Nombre: {self.nombre},")
+            f.write("\n")
+            f.write(f"Mediana de fechas de commits: {self.mediana}")
+            f.write("\n")
+            f.write(f"Promedio de dias entre commits:{self.promedio}")
+
+        
    

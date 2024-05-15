@@ -264,6 +264,7 @@ def busqueda_especifica():
         repo=Repositorio(nombre,usuario)
         repo.detalles()
         repo.excelEstadisticas()
+        print("Se ha guardado el excel con estadisticas del repositorio")
 
 
 
@@ -272,11 +273,28 @@ def busqueda_archivo():
     archivos=os.listdir("registros")
     for i,n in enumerate(archivos):
         print(f"id: {i+1} Nombre: {n}")
-    op=int(input("Selecciona el id del archivo que quieres consultar"))
+    
+    while True:
+        try:
+            op=int(input("Selecciona el id del archivo que quieres consultar: "))
+        except ValueError:
+            print("Dato invalido")
+            continue
 
-    with open(f"registros/{archivos[op-1]}") as archivo:
-        contenido=archivo.read()
-        print(contenido)
+
+        if op-1<len(archivos) and op-1>=0:
+            with open(f"registros/{archivos[op-1]}") as archivo:
+                contenido=archivo.read()
+                print(contenido)
+
+                print("Quieres consultar alguno de los repoitorios? Y/N: ")
+
+                #ver si tiene internet
+
+                
+        else:
+            print("Opcion invalida")
+            continue
 
     
 
