@@ -186,12 +186,9 @@ def busqueda_coincidencias():
                 
                 fecha=datetime.now()
                 nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S")
-                with open(f"registros/historial/busqueda_{nombre_archivo}","w") as f:
-                    f.write(f"Busqueda:{nombre_repo}")
-                    f.write("\n")
-                    for n in detalles_repos:
-                        f.write(f"id: {n['id']} , nombre: {n['name']}, autor: {n['owner']}, visitas: {n['watchers_count']} ")
-                        f.write("\n")
+                df = pd.DataFrame.from_dict(detalles_repos)
+                df.to_json(f'registros/datos_repo_{nombre_archivo}.json', orient='records', lines=True)
+               
                 
                 print("Archivo creado con exito")
 
@@ -250,8 +247,7 @@ def busqueda_coincidencias():
         pass
 
 
-def busqueda_especifica():
-    nombre,usuario="",""
+def busqueda_especifica(usuario,nombre):
     print("Introduzca back! para regresar")
     while nombre=="" or usuario=="":
         nombre=input("Introduzca el nombre del repositorio: ")
@@ -265,6 +261,94 @@ def busqueda_especifica():
     else:
         repo=Repositorio(nombre,usuario)
         repo.detalles()
+        repo.excelEstadisticas()
+        print("Se ha guardado el excel con estadisticas del repositorio")
+
+
+
+def busqueda_archivo():
+
+    f = 0
+    print("Los registros guardados son:")
+    archivos=os.listdir("registros")
+    for i,n in enumerate(archivos):
+        print(f"id: {i+1} Nombre: {n}")
+    
+    while True:
+        if f == 1:
+            break
+
+        try:
+            op=int(input("Selecciona el id del archivo que quieres consultar: "))
+        except ValueError:
+            print("Dato invalido")
+            continue
+
+        
+        
+
+        if op-1<len(archivos) and op-1>=0:
+            df = pd.read_json(f'registros/{archivos[op-1]}', orient='records', lines=True)
+            df['created_at'] = df['created_at'].astype("str")
+            df['pushed_at'] = df['pushed_at'].astype("str")
+            df['updated_at'] = df['created_at'].astype("str")
+            data = list(df.to_dict(orient='index').items())
+            data_list = [data[i][1] for i in range(len(data))]
+    
+            for i,n in enumerate(data_list):
+    
+                str = f'"name":{n["name"]}' + f'"owner":{n["owner"]}' + f'"topics":{n["topics"]}'
+                print(f"Repositorio #{i+1}--- " + str + "\n")
+            
+
+            while True: 
+                op4 = input("Quieres consultar alguno de los repositorios? Y/N: ")
+                if op4 == "y" or op4 == "Y":
+                    try:
+                        op5 = int(input("Cual repositorio? (numero de repositorio): "))
+
+                    except:
+                        print("Dato invalido, no entero")
+
+
+                    while True: 
+                        if op5<len(data_list) and op5>=0:
+                            usuario = data_list[op5-1]["owner"]
+                            nombre = data_list[op5-1]["name"]
+                            busqueda_especifica(usuario,nombre)
+                            break
+
+                        else: 
+                            print("opcion invalida")
+
+                elif op4 == "n" or op4 == "N":
+                    f = 1
+                    break
+                    
+
+                else:
+                    print("Opcion invalida")
+
+            break
+
+            #Siendo sincero, no me parece que sea correcto añadir mas opciones
+            #ver si tiene internet
+
+                
+        else:
+            print("Opcion invalida")
+            continue
+
+    
+
+
+
+def excel_print():
+    pass
+
+def buscar_usuario():
+    pass
+
 
 
 if __name__=="__main__":
@@ -272,5 +356,5 @@ if __name__=="__main__":
 
     #repo=Repositorio("villagraandres","petTrack1")
     #repo.detalles()
-    busqueda_especifica()
+    busqueda_especifica("","")
     pass
