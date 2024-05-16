@@ -82,8 +82,14 @@ def estadisticas():
         with open(f"registros/estadisticas_re/{archivos[op-1]}") as f:
             contenido=f.read()
             print(contenido)
+        n=archivos[op-1]
+        n=n[:len(n)-4]
 
+        print("Se mostraran las graficas generadas del repositorio")
+        print(n)
+        print(os.path.exists(f"graficas/estadisticas/{n}"))
 
+        print(n)
 
 if __name__ =="__main__":
     estadisticas()

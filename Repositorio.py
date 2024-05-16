@@ -73,7 +73,7 @@ class Repositorio:
             t_entre_comm = dict(zip(indexes,hiatus_t_asc))
             import functions
             f=datetime.now()
-            tiempo = f.strftime("%d-%m-%Y_%I_%M%p")
+            tiempo = f.strftime("%d-%m-%Y_%I_%M")
             if not os.path.exists(f"graficas/estadisticas/{self.nombre}_{tiempo}"):
                 os.makedirs(f"graficas/estadisticas/{self.nombre}_{tiempo}")
 
@@ -177,10 +177,10 @@ class Repositorio:
             os.makedirs("registros/estadisticas_re")
 
         f=datetime.now()
+       
         nombre=f"{self.nombre}_"
         print(nombre)
-
-        with open(f"registros/estadisticas_re/{nombre}{datetime.now().strftime("%d-%m-%Y_%I_%M%p")}.txt", "w") as f:
+        with open(f"registros/estadisticas_re/{nombre}{datetime.now().strftime('%d-%m-%Y_%I_%M')}.txt", "w") as f:
             f.write(f"Nombre: {self.nombre},")
             f.write("\n")
             f.write(f"Mediana de fecha de commits: {self.mediana}")
