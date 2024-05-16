@@ -21,20 +21,18 @@ class Repositorio:
     def detalles(self):
         self._calcularMedianayPromedio()
         self._calcularModa()
-        print(f"La moda en el lenguaje mas usado es: {self.moda}")
-        print(f"La mediana de las ultimas 30 commits en fechas: {self.mediana}")
-        print(f"El promedio de tiempo entre cada commit es: {self.promedio}")   
+        self._excelEstadisticas()
+        print("********* Se han generado las graficas, un excel con estadisticas y un archivo txt ********* \n")
+        print(" ")
+        print(f"La moda en el lenguaje mas usado es: {self.moda} ")
+        print(" ")
+        print(f"La mediana de las ultimas 30 commits en fechas: {self.mediana} ")
+        print(" ")
+        print(f"El promedio de tiempo entre cada commit es: {self.promedio} ")   
+        print(" ")
 
-        op=""
-
-        while op!="Y" and op!="N" and op!= "n" and op!="y":
-            op=input("¿Deseas generar un archivo txt con infamacion del repositorio? Y/N: ")
-           
-
-        if op=="Y" or op=="y":
-            self._generartxt()
-        else:
-            pass
+        self._generartxt()
+        
         #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
 
     
@@ -77,7 +75,7 @@ class Repositorio:
 
         else:
             pass
-    def excelEstadisticas(self):
+    def _excelEstadisticas(self):
         #excel con nombre, autor estrellas visitas issues commits fecha de creado rama principal contribuidores
         url = f"https://api.github.com/repos/{self.owner}/{self.nombre}"
         response=requests.get(url)
@@ -103,7 +101,8 @@ class Repositorio:
                 cont=[]
                 for n in resultado2:
                     cont.append(n["login"])
-
+            else:
+                cont="Los colaboradores son mas de 500"
             h["contribuidores"]=cont
 
             if not os.path.exists("excel"):
@@ -144,8 +143,13 @@ class Repositorio:
             f=datetime.now()
             tiempo=f.strftime("%d-%m-%Y_%H")  
             nombre=f"grafica_{self.nombre}_{tiempo}"
-            plt.pie(porcentajes.values(),labels=porcentajes.keys())
+            plt.figure(figsize=(15,10))
+            wedges, texts = plt.pie(porcentajes.values())
             plt.title("Porcentajes del lenguajes de programacion")
+            plt.legend(wedges, porcentajes.keys(),
+                title="Lenguajes",
+                loc="center left",
+                bbox_to_anchor=(1, 0, 0.5, 1))
             plt.savefig(f"graficas/estadisticas/{nombre}")
             plt.close()
             
@@ -168,9 +172,11 @@ class Repositorio:
         with open(f"registros/estadisticas_re/{nombre}.txt","w") as f:
             f.write(f"Nombre: {self.nombre},")
             f.write("\n")
-            f.write(f"Mediana de fechas de commits: {self.mediana}")
+            f.write(f"Mediana de fecha de commits: {self.mediana}")
             f.write("\n")
-            f.write(f"Promedio de dias entre commits:{self.promedio}")
+            f.write(f"Promedio entre commits:{self.promedio}")
+            f.write("\n")
+            f.write(f"Moda de lenguajes de programacion: {self.moda}")
 
         
    

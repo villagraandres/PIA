@@ -1,4 +1,5 @@
 import functions
+import archivosF
 
 if __name__ == "__main__":
     while True:
@@ -14,25 +15,8 @@ if __name__ == "__main__":
         match op:
             
             case 1:
-                t="""Selecciona la opcion que desees:
-                    1. Ver registros de busqueda
-                    2. Ver directorio de excel
-                    3. Regresar"""
-                print(t)
-                while True:       
-                    try:
-                        op2=int(input())
-                        if op2==1:
-                            functions.busqueda_archivo()
-                        elif op==2:
-                            pass
-                        else:
-                            print("Opcion invalida")
-                            break
-                    except ValueError:
-                        print("Valor no valido")
-                        break
-                    
+                archivosF.busqueda_archivo()
+                break     
                 
             case 2:
                 functions.consultar_api()

@@ -90,8 +90,7 @@ def crear_grafica_barras(dic,lable_y,title,color,tipo):
 def consultar_api():
     submmenu="""Seleecione de que quiere obtener los datos:
         1. Repositorio Publico
-        2. Usuario
-        3. Regresar"""
+        2. Regresar"""
     print(submmenu)
     op=int(input("Opcion: "))
     try:
@@ -100,14 +99,11 @@ def consultar_api():
                 buscar_repo()
                 return
             case 2:
-                buscar_usuario()
-                return
-            case 3:
                 return
             case _:
                 print("Opcion invalida")    
             
-    except:
+    except ValueError:
         print("Opción equivocada, ingrese números")
     
     stack.append(consultar_api)
@@ -171,7 +167,7 @@ def busqueda_coincidencias():
 
         lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
   
-        crear_grafica_barras(lenguajes_count,"Frecuencia","Frecuencia de lenguajes de programación","blue","lenguajes")
+        crear_grafica_barras(lenguajes_count,"Frecuencia",f"Frecuencia de lenguajes de programación de busqueda {nombre_repo}","blue","lenguajes")
         print("Se ha creado la grafica de lenguaje de la busqueda")
 
         while True:
@@ -183,12 +179,16 @@ def busqueda_coincidencias():
 
                 if not os.path.exists("registros"):
                     os.makedirs("registros")
+                if not os.path.exists("registros/historial"):
+                    os.makedirs("registros/historial")
                 
                 fecha=datetime.now()
                 nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S")
-                with open(f"registros/datos_repo_{nombre_archivo}","w") as f:
+                with open(f"registros/historial/busqueda_{nombre_archivo}","w") as f:
+                    f.write(f"Busqueda:{nombre_repo}")
+                    f.write("\n")
                     for n in detalles_repos:
-                        f.write(f"id: {n['id']} , nombre: {n['name']}, visitas: {n['watchers_count']} ")
+                        f.write(f"id: {n['id']} , nombre: {n['name']}, autor: {n['owner']}, visitas: {n['watchers_count']} ")
                         f.write("\n")
                 
                 print("Archivo creado con exito")
@@ -221,7 +221,7 @@ def busqueda_coincidencias():
                 print("Archivo creado con exito")
 
                 break
-            elif op2=="N" or op2=="n":
+            elif op3=="N" or op3=="n":
                 break
             else:
                 print("Dato invalido")
@@ -231,7 +231,7 @@ def busqueda_coincidencias():
         
 
         while True:
-            op = int(input("Seleccione el numero de repositorio del que quiero obtener las estadisticas: "))
+            op = int(input("Seleccione el id del repositorio del que quiere obtener las estadisticas: "))
             
             if op<1 or op>len(resultados):
                 print("Opcion invalida")
@@ -263,49 +263,6 @@ def busqueda_especifica():
     else:
         repo=Repositorio(nombre,usuario)
         repo.detalles()
-        repo.excelEstadisticas()
-        print("Se ha guardado el excel con estadisticas del repositorio")
-
-
-
-def busqueda_archivo():
-    print("Los registros guardados son:")
-    archivos=os.listdir("registros")
-    for i,n in enumerate(archivos):
-        print(f"id: {i+1} Nombre: {n}")
-    
-    while True:
-        try:
-            op=int(input("Selecciona el id del archivo que quieres consultar: "))
-        except ValueError:
-            print("Dato invalido")
-            continue
-
-
-        if op-1<len(archivos) and op-1>=0:
-            with open(f"registros/{archivos[op-1]}") as archivo:
-                contenido=archivo.read()
-                print(contenido)
-
-                print("Quieres consultar alguno de los repoitorios? Y/N: ")
-
-                #ver si tiene internet
-
-                
-        else:
-            print("Opcion invalida")
-            continue
-
-    
-
-
-
-def excel_print():
-    pass
-
-def buscar_usuario():
-    pass
-
 
 
 if __name__=="__main__":
@@ -313,5 +270,5 @@ if __name__=="__main__":
 
     #repo=Repositorio("villagraandres","petTrack1")
     #repo.detalles()
-    busqueda_especifica()
+    busqueda_coincidencias()
     pass
