@@ -267,7 +267,6 @@ def busqueda_especifica(usuario,nombre):
 
 
 def busqueda_archivo():
-
     f = 0
     print("Los registros guardados son:")
     archivos=os.listdir("registros")
@@ -275,9 +274,7 @@ def busqueda_archivo():
         print(f"id: {i+1} Nombre: {n}")
     
     while True:
-        if f == 1:
-            break
-
+        
         try:
             op=int(input("Selecciona el id del archivo que quieres consultar: "))
         except ValueError:
@@ -322,14 +319,14 @@ def busqueda_archivo():
                             print("opcion invalida")
 
                 elif op4 == "n" or op4 == "N":
-                    f==1
+                    print("pene")
                     break
                     
 
                 else:
                     print("Opcion invalida")
 
-
+            break
 
             #Siendo sincero, no me parece que sea correcto añadir mas opciones
             #ver si tiene internet
@@ -338,6 +335,7 @@ def busqueda_archivo():
         else:
             print("Opcion invalida")
             continue
+
 
     
 
