@@ -19,7 +19,7 @@ def busqueda_archivo():
     if op==1:
         historial()
     if op==2:
-        pass
+        estadisticas()
 
     
 
@@ -57,3 +57,33 @@ def historial():
     else:
         print("No hay registros guardados")
 
+
+def estadisticas():
+    if not os.path.exists("registros/estadisticas_re"):
+        os.makedirs("registros/estadisticas_re")
+    archivos=os.listdir("registros/estadisticas_re")
+
+    print("Los repositorios consultados son:")
+    if len("archivos")>0:
+        for i,n in enumerate(archivos):
+            print(f"Id:{i+1} {n}")
+        
+        
+
+        while True:
+            try:
+                op=int(input("Selecciona el id del archivo que deses consultar: "))
+                if op-1<len(archivos) and op>0:
+                    break
+                
+            except ValueError:
+                print("Dato invalido")
+        
+        with open(f"registros/estadisticas_re/{archivos[op-1]}") as f:
+            contenido=f.read()
+            print(contenido)
+
+
+
+if __name__ =="__main__":
+    estadisticas()
