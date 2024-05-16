@@ -322,14 +322,14 @@ def busqueda_archivo():
                             print("opcion invalida")
 
                 elif op4 == "n" or op4 == "N":
-                    f = 1
+                    f==1
                     break
                     
 
                 else:
                     print("Opcion invalida")
 
-            break
+
 
             #Siendo sincero, no me parece que sea correcto añadir mas opciones
             #ver si tiene internet
