@@ -65,10 +65,14 @@ def crear_grafica_barras(dic,lable_y,title,color,tipo,path=None):
         if not os.path.exists("graficas/lenguajes"):
             os.makedirs("graficas/lenguajes")
         
-        file_name = f"graph{random.randint(1,2147483648)}.png"
+        f=datetime.now()
+        tiempo = f.strftime("%d-%m-%Y_%I_%M%p")
+        file_name = f"graph{tiempo}.png"
         ruta=os.path.join("graficas/lenguajes",file_name)
+        
         if not os.path.exists(ruta):
             fig.savefig(ruta)
+
     elif tipo=="estadisticas":
          f=datetime.now()
          tiempo = f.strftime("%d-%m-%Y_%I_%M%p")
