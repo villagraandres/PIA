@@ -1,5 +1,6 @@
 import os
-
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 def busqueda_archivo():
     while True:
         t="""Escriba la opcion que desee
@@ -20,6 +21,7 @@ def busqueda_archivo():
         historial()
     if op==2:
         estadisticas()
+        plt.show()
 
     
 
@@ -87,9 +89,15 @@ def estadisticas():
 
         print("Se mostraran las graficas generadas del repositorio")
         print(n)
-        print(os.path.exists(f"graficas/estadisticas/{n}"))
+
+        r=f"graficas/estadisticas/{n}"
+        for grafica in os.listdir(r):
+            img = mpimg.imread(os.path.join(r, grafica))
+            plt.figure()
+            imgplot = plt.imshow(img)
+            plt.show(block=False)
 
         print(n)
 
 if __name__ =="__main__":
-    estadisticas()
+    busqueda_archivo()
