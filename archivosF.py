@@ -1,6 +1,8 @@
 import os
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+from PIL import Image
+
 def busqueda_archivo():
     while True:
         t="""Escriba la opcion que desee
@@ -88,16 +90,14 @@ def estadisticas():
         n=n[:len(n)-4]
 
         print("Se mostraran las graficas generadas del repositorio")
-        print(n)
+
 
         r=f"graficas/estadisticas/{n}"
         for grafica in os.listdir(r):
-            img = mpimg.imread(os.path.join(r, grafica))
-            plt.figure()
-            imgplot = plt.imshow(img)
-            plt.show(block=False)
-
-        print(n)
+            a=os.path.join(r,grafica)
+            img=Image.open(a)
+            img.show()
+  
 
 if __name__ =="__main__":
     busqueda_archivo()

@@ -43,7 +43,7 @@ def crear_grafica_barras(dic,lable_y,title,color,tipo,path=None):
     if tipo=="lenguajes":       
         fig, ax = plt.subplots(figsize=(15,6))
     elif tipo=="estadisticas":
-        fig, ax = plt.subplots(figsize=(25,6))
+        fig, ax = plt.subplots(figsize=(20,4))
 
     bar_colors = [rgba_color[:3] + (i/n,)  for i in range(1,n+1)] #Usa el color dado y da un degradado para diferenciar
     ax.bar(ord_dic.keys(), ord_dic.values(), color=bar_colors)
