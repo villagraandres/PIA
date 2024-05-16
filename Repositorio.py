@@ -13,6 +13,7 @@ class Repositorio:
         self.promedio=""
         self.moda=""
         self.info={}
+        self.ruta=""
         
 
     def __str__(self) -> str:
@@ -21,6 +22,7 @@ class Repositorio:
     def detalles(self):
         self._calcularMedianayPromedio()
         self._calcularModa()
+        self._generartxt()
         self._excelEstadisticas()
         print("********* Se han generado las graficas, un excel con estadisticas y un archivo txt ********* \n")
         print(" ")
@@ -31,7 +33,7 @@ class Repositorio:
         print(f"El promedio de tiempo entre cada commit es: {self.promedio} ")   
         print(" ")
 
-        self._generartxt()
+        
         
         #promedio de issues cerradas/abiertas en 30 dias o issues en un maximo
 
@@ -70,7 +72,16 @@ class Repositorio:
             indexes  = [str(timedelta(seconds=t)) for t in hiatus_t_asc]
             t_entre_comm = dict(zip(indexes,hiatus_t_asc))
             import functions
-            functions.crear_grafica_barras(t_entre_comm,"",f"Mayor tiempo entre commits en: {self.nombre}","green","estadisticas")
+            f=datetime.now()
+            tiempo = f.strftime("%d-%m-%Y_%I_%M%p")
+            if not os.path.exists(f"graficas/estadisticas/{self.nombre}_{tiempo}"):
+                os.makedirs(f"graficas/estadisticas/{self.nombre}_{tiempo}")
+
+            self.ruta=f"graficas/estadisticas/{self.nombre}_{tiempo}"
+            
+
+
+            functions.crear_grafica_barras(t_entre_comm,"",f"Mayor tiempo entre commits en: {self.nombre}","green","estadisticas",self.ruta)
             print("Se creo exitosamente la gráfica de tiempos")
 
         else:
@@ -142,7 +153,7 @@ class Repositorio:
             #crear grafica de pastel  
             f=datetime.now()
             tiempo=f.strftime("%d-%m-%Y_%H")  
-            nombre=f"grafica_{self.nombre}_{tiempo}"
+            nombre=f"graficaP_{self.nombre}_{tiempo}"
             plt.figure(figsize=(15,10))
             wedges, texts = plt.pie(porcentajes.values())
             plt.title("Porcentajes del lenguajes de programacion")
@@ -150,7 +161,7 @@ class Repositorio:
                 title="Lenguajes",
                 loc="center left",
                 bbox_to_anchor=(1, 0, 0.5, 1))
-            plt.savefig(f"graficas/estadisticas/{nombre}")
+            plt.savefig(f"{self.ruta}/{nombre}")
             plt.close()
             
         else:
@@ -167,9 +178,10 @@ class Repositorio:
 
         f=datetime.now()
         tiempo=f.strftime("%d-%m-%Y_%H")
-        nombre=f"reporte_{tiempo}"
+        nombre=f"r{self.nombre}_"
+        print(nombre)
 
-        with open(f"registros/estadisticas_re/{nombre}.txt","w") as f:
+        with open(f"registros/estadisticas_re/{nombre}{datetime.now().strftime('%d-%m-%Y_%H')}.txt", "w") as f:
             f.write(f"Nombre: {self.nombre},")
             f.write("\n")
             f.write(f"Mediana de fecha de commits: {self.mediana}")

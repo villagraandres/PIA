@@ -11,7 +11,6 @@ if __name__ == "__main__":
             print("Opcion invalida")
             continue
         f = 0
-        print(op)
         match op:
             
             case 1:

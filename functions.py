@@ -28,7 +28,7 @@ def menu():
 #Dado un diccionario crea una gráfica de barras, supone valores númericos en los valores, y ordena los datos 
 #En orden ascendente
 """
-def crear_grafica_barras(dic,lable_y,title,color,tipo): 
+def crear_grafica_barras(dic,lable_y,title,color,tipo,path=None): 
     
 
     ord_dic={}
@@ -70,12 +70,14 @@ def crear_grafica_barras(dic,lable_y,title,color,tipo):
         if not os.path.exists(ruta):
             fig.savefig(ruta)
     elif tipo=="estadisticas":
+         f=datetime.now()
+         tiempo = f.strftime("%d-%m-%Y_%I_%M%p")
          
          if not os.path.exists("graficas/estadisticas"):
             os.makedirs("graficas/estadisticas")
         
-         file_name = f"graph{random.randint(1,2147483648)}.png"
-         ruta=os.path.join("graficas/estadisticas",file_name)
+         file_name = f"grafica_tiempo_{tiempo}.png"
+         ruta=os.path.join(path,file_name)
          if not os.path.exists(ruta):
             fig.savefig(ruta)       
 
@@ -270,5 +272,5 @@ if __name__=="__main__":
 
     #repo=Repositorio("villagraandres","petTrack1")
     #repo.detalles()
-    busqueda_coincidencias()
+    busqueda_especifica()
     pass
