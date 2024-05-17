@@ -1,6 +1,7 @@
 import os
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+import pandas as pd
 import functions
 from PIL import Image
 
@@ -134,8 +135,9 @@ def estadisticas():
         for grafica in os.listdir(r):
             a=os.path.join(r,grafica)
             img=Image.open(a)
-            img.show()
-            
+            img.show()        
+        return
+    
     else:
         print("No hay archivos")
         return
