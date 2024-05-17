@@ -163,14 +163,14 @@ def buscar_repo():
 
 
 def busqueda_coincidencias():
-    print("Escriba back! para regresar")
-    nombre_repo=input("Introduzca el nombre del repositorio: ")
-    if nombre_repo=="back!":
-        stack.pop()()
-        return 
-    stack.append(busqueda_coincidencias)
+    nombre_repo=input("Introduzca el nombre del repositorio: ") 
+
 
     url = f"https://api.github.com/search/repositories?q={nombre_repo}"
+
+    if not verificarC():
+        print("No hay conexion o fallo la api de github")
+        return 
     try:
         response=requests.get(url)
         response.raise_for_status()
@@ -282,6 +282,10 @@ def busqueda_coincidencias():
 
 
 def busqueda_especifica(usuario,nombre,flag):
+    if not verificarC():
+        print("No hay conexion o fallo la api de github")
+        return 
+    
     url = f"https://api.github.com/repos/{usuario}/{nombre}"
     if flag == 0:
         print("Introduzca back! para regresar")
