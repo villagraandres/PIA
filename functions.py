@@ -8,6 +8,7 @@ import pandas as pd
 from matplotlib import colors
 import matplotlib.pyplot as plt
 from datetime import datetime
+import urllib.request
 
 
 stack=[]
@@ -170,122 +171,125 @@ def busqueda_coincidencias():
     stack.append(busqueda_coincidencias)
 
     url = f"https://api.github.com/search/repositories?q={nombre_repo}"
-    response=requests.get(url)
-    if response.status_code==200:
-        resultados=response.json()['items']
-        detalles_repos = []
-        lenguajes = []
-        print("Repositorios que coinciden con el nombre:")
-        for i,n in enumerate(resultados):
-            print(f"id: {i+1} Nombre: {n['name']} Autor: {n['owner']['login']} ")
-            if len(n['topics'])!=0:
-                print(f"Temas: {', '.join(n['topics'])}\n")
-            else:
-                print("El autor no proporciono temas\n")
-                
-            lenguajes.append( {"lang":n["language"]} )
-            datos_int = ["id","name","created_at","updated_at","pushed_at","topics","watchers_count","open_issues","score","language"]
-            repo = {dato:n[dato] for dato in datos_int}
-            repo['owner']=n["owner"]["login"]     
-            detalles_repos.append(repo)
-            
-            
-        lenguajes = [repo["language"] for repo in detalles_repos]    
-
-        lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
-  
-        crear_grafica_barras(lenguajes_count,"Frecuencia",f"Frecuencia de lenguajes de programación de busqueda {nombre_repo}","blue","lenguajes")
-        print("Se ha creado la grafica de lenguaje de la busqueda")
-
-        while True:
-            
-            op2=input("Deseas guardar el registro de los repositorios en un archivo txt? Y/N:  ")
-            if op2=="Y" or op2=="y":
-
-                print("Creando archivo ...")
-
-                if not os.path.exists("registros"):
-                    os.makedirs("registros")
-                if not os.path.exists("registros/historial"):
-                    os.makedirs("registros/historial")
-                
-                fecha=datetime.now()
-                nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S")
-                df = pd.DataFrame.from_dict(detalles_repos)
-                df.to_json(f'registros/datos_repo_{nombre_archivo}.json', orient='records', lines=True)
-               
-                
-                print("Archivo creado con exito")
-
-                break
-            elif op2=="N" or op2=="n":
-                break
-            else:
-                print("Dato invalido")
-                
-        while True:
-    
-            op3=input("Deseas guardar el registro de los repositorios en un archivo excel? Y/N:  ")
-            if op3=="Y" or op3=="y":
-
-                print("Creando archivo ...")
-
-                if not os.path.exists("excel"):
-                    os.makedirs("excel")
-                if not os.path.exists("excel/registros"):
-                    os.makedirs("excel/registros")
-
-                fecha=datetime.now()
-                nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S") + ".xlsx"
-                ruta = os.path.join("excel/registros/", nombre_archivo)
-                df = pd.DataFrame(detalles_repos)
-                df.to_excel(ruta, index=False, sheet_name="Hoja1")
-                
-                
-                print("Archivo creado con exito")
-
-                break
-            elif op3=="N" or op3=="n":
-                break
-            else:
-                print("Dato invalido")
-
-
-        
-        
-
-        while True:
-            try:
-                op = int(input("Seleccione el id del repositorio del que quiere obtener las estadisticas: "))
-            except ValueError:
-                print("Opción equivocada, ingrese números\n")
-                continue
-            
-            if op<1 or op>len(resultados):
-                print("Opcion invalida")
-                continue
-            break
-
-        repo=resultados[op-1]
-        repositorio = Repositorio(repo['name'],repo['owner']['login'])
-        repositorio.detalles()
-
-
-    
+    try:
+        response=requests.get(url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print("Un error ocurrio al consultar la api",e)
     else:
-        print("Hubo un error!\n")
+        if response.status_code==200:
+            resultados=response.json()['items']
+            detalles_repos = []
+            lenguajes = []
+            print("Repositorios que coinciden con el nombre:")
+            for i,n in enumerate(resultados):
+                print(f"id: {i+1} Nombre: {n['name']} Autor: {n['owner']['login']} ")
+                if len(n['topics'])!=0:
+                    print(f"Temas: {', '.join(n['topics'])}\n")
+                else:
+                    print("El autor no proporciono temas\n")
+                    
+                lenguajes.append( {"lang":n["language"]} )
+                datos_int = ["id","name","created_at","updated_at","pushed_at","topics","watchers_count","open_issues","score","language"]
+                repo = {dato:n[dato] for dato in datos_int}
+                repo['owner']=n["owner"]["login"]     
+                detalles_repos.append(repo)
+                
+                
+            lenguajes = [repo["language"] for repo in detalles_repos]    
+
+            lenguajes_count = {lang:lenguajes.count(lang) for lang in set(lenguajes)} 
+    
+            crear_grafica_barras(lenguajes_count,"Frecuencia",f"Frecuencia de lenguajes de programación de busqueda {nombre_repo}","blue","lenguajes")
+            print("Se ha creado la grafica de lenguaje de la busqueda")
+
+            while True:
+                
+                op2=input("Deseas guardar el registro de los repositorios en un archivo txt? Y/N:  ")
+                if op2=="Y" or op2=="y":
+
+                    print("Creando archivo ...")
+
+                    if not os.path.exists("registros"):
+                        os.makedirs("registros")
+                    if not os.path.exists("registros/historial"):
+                        os.makedirs("registros/historial")
+                    
+                    fecha=datetime.now()
+                    nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S")
+                    df = pd.DataFrame.from_dict(detalles_repos)
+                    df.to_json(f'registros/historial/datos_repo_{nombre_archivo}.json', orient='records', lines=True)          
+                    
+                    print("Archivo creado con exito")
+
+                    break
+                elif op2=="N" or op2=="n":
+                    break
+                else:
+                    print("Dato invalido")
+                    
+            while True:
+        
+                op3=input("Deseas guardar el registro de los repositorios en un archivo excel? Y/N:  ")
+                if op3=="Y" or op3=="y":
+
+                    print("Creando archivo ...")
+
+                    if not os.path.exists("excel"):
+                        os.makedirs("excel")
+                    if not os.path.exists("excel/registros"):
+                        os.makedirs("excel/registros")
+
+                    fecha=datetime.now()
+                    nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S") + ".xlsx"
+                    ruta = os.path.join("excel/registros/", nombre_archivo)
+                    df = pd.DataFrame(detalles_repos)
+                    df.to_excel(ruta, index=False, sheet_name="Hoja1")
+                    
+                    
+                    print("Archivo creado con exito")
+
+                    break
+                elif op3=="N" or op3=="n":
+                    break
+                else:
+                    print("Dato invalido")
+
+
+            
+            
+
+            while True:
+                try:
+                    op = int(input("Seleccione el id del repositorio del que quiere obtener las estadisticas: "))
+                except ValueError:
+                    print("Opción equivocada, ingrese números\n")
+                    continue
+                
+                if op<1 or op>len(resultados):
+                    print("Opcion invalida")
+                    continue
+                break
+
+            repo=resultados[op-1]
+            repositorio = Repositorio(repo['name'],repo['owner']['login'])
+            repositorio.detalles()
+
+
+    
+        else:
+            print("Hubo un error!\n")
 
 
 def busqueda_especifica(usuario,nombre,flag):
-    
+    url = f"https://api.github.com/repos/{usuario}/{nombre}"
     if flag == 0:
         print("Introduzca back! para regresar")
         while nombre=="" or usuario=="":
             nombre=input("Introduzca el nombre del repositorio: ")
             if nombre=="back!":
                 consultar_api()   
-            usuario=input("Introduzca el nombre del usuario que posee el repositorio: ")
-        url = f"https://api.github.com/repos/{usuario}/{nombre}"
+            usuario=input("Introduzca el nombre del usuario que posee el repositorio: ")    
     else:
         pass
     
@@ -328,5 +332,11 @@ def borrar_todo():
     
     
     
-    
-    
+def verificarC():
+   try:
+        urllib.request.urlopen('https://api.github.com', timeout=1)
+        return True
+   except urllib.request.URLError:
+        return False     
+      
+     

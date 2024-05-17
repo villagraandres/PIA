@@ -120,8 +120,10 @@ class Repositorio:
                 os.makedirs("excel")
             if not os.path.exists("excel/repo"):
                 os.makedirs("excel/repo")
-            fecha=datetime.now()
-            nombre_archivo = fecha.strftime("%d-%m-%Y_%H-%M-%S") + ".xlsx"
+            f=datetime.now()
+            
+            tiempo = f.strftime("%d-%m-%Y_%I_%M")
+            nombre_archivo = f"{self.nombre}_{tiempo}.xlsx"
             ruta=os.path.join("excel/repo/",nombre_archivo)
 
             df=pd.DataFrame([h])
@@ -179,7 +181,6 @@ class Repositorio:
         f=datetime.now()
        
         nombre=f"{self.nombre}_"
-        print(nombre)
         with open(f"registros/estadisticas_re/{nombre}{datetime.now().strftime('%d-%m-%Y_%I_%M')}.txt", "w") as f:
             f.write(f"Nombre: {self.nombre},")
             f.write("\n")

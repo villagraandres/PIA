@@ -1,5 +1,6 @@
 import functions
 import archivosF
+import urllib.request
 
 if __name__ == "__main__":
     while True:
@@ -10,7 +11,11 @@ if __name__ == "__main__":
             case 1:
                 archivosF.busqueda_archivo()
             case 2:
-                functions.consultar_api()
+                if functions.verificarC():
+                    functions.consultar_api()
+                else:
+                    print("No tienes conexion o la api de github tiene fallas, redirigiendo...")
+                    archivosF.busqueda_archivo()
             case 3:
                 functions.borrar_todo()
             

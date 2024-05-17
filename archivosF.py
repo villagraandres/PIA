@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import functions
 from PIL import Image
+from tabulate import tabulate
+from prettytable import PrettyTable
 
 def busqueda_archivo():
     while True:
@@ -23,9 +25,10 @@ def busqueda_archivo():
         
     if op==1:
         historial()
+        
     if op==2:
         estadisticas()
-        plt.show()
+        return 
 
     
 
@@ -36,8 +39,10 @@ def historial():
     if not os.path.exists("registros/historial"):
         os.makedirs("registros/historial")
     archivos=os.listdir("registros/historial")
+    print(archivos)
+    print(len(archivos))
     
-    if len(archivos)>1:
+    if len(archivos)>=1:
 
         for i,n in enumerate(archivos):
             print(f"id: {i+1} Nombre: {n}")
@@ -47,11 +52,11 @@ def historial():
             try:
                 op=int(input("Selecciona el id del archivo que quieres consultar: "))
             except ValueError:
-                print("Dato invalido")
+                print("Dato invalido")  
                 continue
 
             if op-1<len(archivos) and op-1>=0:
-                df = pd.read_json(f'registros/{archivos[op-1]}', orient='records', lines=True)
+                df = pd.read_json(f'registros/historial/{archivos[op-1]}', orient='records', lines=True)
                 df['created_at'] = df['created_at'].astype("str")
                 df['pushed_at'] = df['pushed_at'].astype("str")
                 df['updated_at'] = df['created_at'].astype("str")
@@ -60,7 +65,7 @@ def historial():
 
                 for i,n in enumerate(data_list):
                 
-                    str = f'"name":{n["name"]}' + f'"owner":{n["owner"]}' + f'"topics":{n["topics"]}'
+                    str = f'"Nombre":{n["name"]}' + f'"Autor":{n["owner"]}' + f'"Temas":{n["topics"]}'
                     print(f"Repositorio #{i+1}--- " + str + "\n")
 
 
@@ -74,15 +79,15 @@ def historial():
                             print("Dato invalido, no entero")
 
 
-                        while True: 
-                            if op5<len(data_list) and op5>=0:
-                                usuario = data_list[op5-1]["owner"]
-                                nombre = data_list[op5-1]["name"]
-                                functions.busqueda_especifica(usuario,nombre,1)
-                                break
+                        
+                        if op5<len(data_list) and op5>=0:
+                            usuario = data_list[op5-1]["owner"]
+                            nombre = data_list[op5-1]["name"]
+                            functions.busqueda_especifica(usuario,nombre,1)
+                            break
 
-                            else: 
-                                print("opcion invalida")
+                        else: 
+                            print("opcion invalida")
 
                     elif op4 == "n" or op4 == "N":
                         break
@@ -100,7 +105,8 @@ def historial():
     else:
         print("No hay registros guardados")
 
-
+def truncate(text, max_length=30):
+    return (text[:max_length] + '...') if len(text) > max_length else text
 def estadisticas():
     if not os.path.exists("registros/estadisticas_re"):
         os.makedirs("registros/estadisticas_re")
@@ -128,6 +134,21 @@ def estadisticas():
         n=archivos[op-1]
         n=n[:len(n)-4]
 
+        print("***** Archivo Excel *****")
+        rexcel=f"excel/repo/{n}.xlsx"
+        #creamos un dataframe con el archivo excel
+        df=pd.read_excel(rexcel)
+        df = df.drop(columns=['contribuidores'])
+        tabla = PrettyTable()
+        tabla.field_names = df.columns.tolist()
+        for _, row in df.iterrows():
+             tabla.add_row(row.tolist())
+
+# Mostrar la tabla
+        print(tabla)
+        
+
+
         print("Se mostraran las graficas generadas del repositorio")
 
 
@@ -135,7 +156,8 @@ def estadisticas():
         for grafica in os.listdir(r):
             a=os.path.join(r,grafica)
             img=Image.open(a)
-            img.show()        
+            img.show()     
+           
         return
     
     else:
