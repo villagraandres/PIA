@@ -72,6 +72,9 @@ def historial():
                 while True: 
                     op4 = input("Quieres consultar alguno de los repositorios? Y/N: ")
                     if op4 == "y" or op4 == "Y":
+                        if not functions.verificarC():
+                            print("No hay internet o hay un fallo con la API de github")
+                            break
                         try:
                             op5 = int(input("Cual repositorio? (numero de repositorio): "))
 
@@ -105,8 +108,6 @@ def historial():
     else:
         print("No hay registros guardados")
 
-def truncate(text, max_length=30):
-    return (text[:max_length] + '...') if len(text) > max_length else text
 def estadisticas():
     if not os.path.exists("registros/estadisticas_re"):
         os.makedirs("registros/estadisticas_re")
@@ -127,7 +128,7 @@ def estadisticas():
                 
             except ValueError:
                 print("Dato invalido")
-        
+        print("***** Estadisticas *****")
         with open(f"registros/estadisticas_re/{archivos[op-1]}") as f:
             contenido=f.read()
             print(contenido)
