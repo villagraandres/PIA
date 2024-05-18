@@ -286,7 +286,6 @@ def busqueda_especifica(usuario,nombre,flag):
         print("No hay conexion o fallo la api de github")
         return 
     
-    url = f"https://api.github.com/repos/{usuario}/{nombre}"
     if flag == 0:
         print("Introduzca back! para regresar")
         while nombre=="" or usuario=="":
@@ -296,6 +295,8 @@ def busqueda_especifica(usuario,nombre,flag):
             usuario=input("Introduzca el nombre del usuario que posee el repositorio: ")    
     else:
         pass
+    
+    url = f"https://api.github.com/repos/{usuario}/{nombre}"
     
     response=requests.get(url)
     if response.status_code!=200:
